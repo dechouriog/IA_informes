@@ -1,4 +1,4 @@
-### Informe #1 técnica clásica: Regresión Lineal
+# Informe #X - Support Vector Regression (SVR)
 
 ## 1) Descripción del dataset
 
@@ -12,7 +12,7 @@
 
 ### Variables
 
-- **Id:** Identificador único de la vivienda (irrelevante para la predicción).  
+- **Id:** Identificador único de la vivienda. (irrelevante para la predicción)  
 - **Area:** Área de la vivienda en pies cuadrados.  
 - **Bedrooms:** Número de habitaciones.  
 - **Bathrooms:** Número de baños.  
@@ -23,72 +23,76 @@
 - **Garage:** Indica si tiene garaje (Yes / No).  
 - **Price:** Variable objetivo (target) → precio de la vivienda en dólares.  
 
-👉 La base de datos es limpia (sin valores nulos ni duplicados) y con un target bien definido, lo que la hace adecuada para problemas de predicción de precios de casas.
+El dataset se encontraba bien estructurado, sin valores nulos ni duplicados, con un target definido, lo que facilita su uso para tareas de aprendizaje supervisado.
 
 ---
 
 ## 2) Preprocesamiento realizado
 
-### a) Limpieza de datos
-- Se eliminaron valores nulos con `dropna()`.  
-- Se eliminó la columna **Id**, al no aportar información predictiva.  
+### a) Limpieza de datos faltantes
+- Se verificó la existencia de valores nulos.  
+- Se eliminaron las filas con datos faltantes usando `dropna()`.  
+- La columna **Id** fue eliminada por no aportar valor predictivo.  
 
 ### b) Codificación de variables categóricas
-- Se aplicó **One-Hot Encoding** con `pd.get_dummies()` para transformar variables categóricas (`Location`, `Condition`, `Garage`).  
-- Se utilizó `drop_first=True` para evitar multicolinealidad.  
+- Las variables categóricas (**Location**, **Condition**, **Garage**) fueron convertidas a variables numéricas mediante **One-Hot Encoding**.  
+- Se usó `drop_first=True` para evitar multicolinealidad.  
 
-### c) Escalado / normalización
-- Se aplicó **MinMaxScaler** a las variables numéricas (`Area`, `Bedrooms`, `Bathrooms`, `Floors`, `YearBuilt`) para normalizarlas entre 0 y 1.  
-- Aunque la regresión lineal no requiere normalización, se utilizó para mantener consistencia entre variables.  
+### c) Escalado/normalización
+- Se aplicó **MinMaxScaler** a las variables numéricas:  
+  - *Area, Bedrooms, Bathrooms, Floors, YearBuilt*  
+- Esto es importante porque **SVR se basa en distancias** y es sensible a la escala de las variables.  
 
 ### d) División en train/test
 - Se dividió el dataset en:  
-  - **80% entrenamiento (X_train, y_train)**  
-  - **20% prueba (X_test, y_test)**  
-- La división se realizó con `train_test_split` y `random_state=42` para asegurar reproducibilidad.  
+  - **80% entrenamiento** (X_train, y_train)  
+  - **20% prueba** (X_test, y_test)  
+- Se utilizó `train_test_split` con `random_state=42` para reproducibilidad.  
 
 ---
 
 ## 3) Entrenamiento del modelo
 
-- Se utilizó la clase **LinearRegression** de `scikit-learn`.  
-- Proceso de entrenamiento:  
-  - El modelo se entrenó con las variables predictoras (X_train).  
-  - La variable objetivo (y_train) fue el **Price**.  
-  - Posteriormente se realizaron predicciones sobre el conjunto de prueba (X_test).  
+Se utilizó un **Support Vector Regressor (SVR)** de `scikit-learn` con los siguientes parámetros:  
+
+- **kernel = "rbf"** → permite capturar relaciones no lineales.  
+- **C = 100** → controla la penalización del error.  
+- **gamma = 0.1** → define la influencia de cada punto de soporte.  
+- **epsilon = 0.1** → margen de tolerancia al error.  
+
+El modelo se entrenó con el conjunto de entrenamiento y posteriormente se evaluó con el conjunto de prueba.  
 
 ---
 
 ## 4) Evaluación de resultados
 
-### a. Métricas de rendimiento
-El modelo fue evaluado con las métricas clásicas para regresión:  
+### a) Métricas de rendimiento
+Se calcularon las siguientes métricas:  
 
-- **MSE (Mean Squared Error):** mide el error cuadrático medio de las predicciones respecto a los valores reales.  
-- **R² (Coeficiente de determinación):** indica qué proporción de la variabilidad en el precio puede ser explicada por el modelo.  
+- **MSE (Mean Squared Error):** mide el error cuadrático medio de las predicciones.  
+- **R² (Coeficiente de determinación):** indica qué proporción de la variabilidad del precio es explicada por el modelo.  
+- **MAE (Mean Absolute Error):** mide el error absoluto promedio de las predicciones.  
 
-**Resultados obtenidos en test:**  
-- MSE: `78,321,466,146.03`  
-- R²: `-0.0067`  
+### b) Curvas o visualizaciones
+Se realizaron dos gráficas principales:  
 
-Interpretación:  
-- El **MSE elevado** refleja un error grande en las predicciones debido a la escala de la variable objetivo (precios en cientos de miles).  
-- El **R² negativo** indica que el modelo predice peor que un modelo base que siempre devuelve el valor promedio del precio.  
+1. **Valores reales vs valores predichos:**  
+   Permite comparar visualmente el desempeño del modelo.  
+   Idealmente, los puntos deberían alinearse a la diagonal (predicción perfecta).  
 
-### b. Visualización Real vs Predicho
-Se generó un gráfico de dispersión **Valores reales vs. valores predichos**, donde los puntos deberían alinearse a la diagonal en caso de un buen ajuste.  
-En este caso, la dispersión confirma que la regresión lineal no logra capturar adecuadamente la relación entre las variables y el precio.  
-![alt text](image.png)
+2. **Distribución de errores:**  
+   Histograma que muestra la dispersión de los errores de predicción.  
 
 ---
 
 ## 5) Análisis comparativo
-Pendiente: este modelo será comparado con otras técnicas más avanzadas para evaluar mejoras en el rendimiento.  
+
+(Pendiente: aquí se añadirá la comparación con los otros modelos entrenados).  
 
 ---
 
 ## 6) Conclusiones
 
-- La **regresión lineal** no resultó adecuada para este dataset, dado que la relación entre las variables y el precio **no es estrictamente lineal**.  
-- Las métricas obtenidas muestran que el modelo se desempeña incluso peor que una predicción simple de la media del target.  
-- A pesar de ello, este resultado es valioso dentro del análisis comparativo, ya que establece una **línea base clásica** contra la cual se pueden medir otros modelos más complejos.  
+- El modelo SVR logró capturar relaciones no lineales en los datos gracias al kernel RBF.  
+- La normalización de las variables fue clave para que el modelo funcionara correctamente.  
+- Aunque los resultados no fueron perfectos, SVR es una técnica interesante para datasets tabulares de tamaño pequeño a mediano.  
