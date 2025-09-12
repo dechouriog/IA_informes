@@ -87,12 +87,12 @@ Se realizaron dos gráficas principales:
 
 ## 5) Análisis comparativo
 
-(Pendiente: aquí se añadirá la comparación con los otros modelos entrenados).  
+Como se pudo apreciar por los valores de MSE y R^2, el modelo SVR no contó con un buen desempeño para este dataset, pues no está especializado para este tipo de predicciones, siendo casi tan efectivo a no tener modelo en general. En comparación a los demás modelos, este no contó con un buen desempeño, y considerando la posible carga que puede representar en cuanto a recursos no vale la pena hacer uso del mismo para este dataset en específico.
 
 ---
 
 ## 6) Conclusiones
 
 - El modelo SVR logró capturar relaciones no lineales en los datos gracias al kernel RBF.  
-- La normalización de las variables fue clave para que el modelo funcionara correctamente.  
-- Aunque los resultados no fueron perfectos, SVR es una técnica interesante para datasets tabulares de tamaño pequeño a mediano.  
+- La normalización de las variables fue clave para que el modelo funcionara, pero no necesariamente garantizó éxito predictivo.  
+- Aunque los resultados fueron bastante alejados a perfectos, SVR es una técnica "interesante" para datasets de tamaño pequeño a mediano, pero muy costosa para aquellos que cuenten con una mayor cantidad de filas.  
